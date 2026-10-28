@@ -604,27 +604,6 @@ function drawShadow(wx, wy, wz, alpha, scale) {
   ctx.fill();
 }
 
-function drawAimLine() {
-  const p = clamp(chargeT / CHARGE_TIME, 0, 1);
-  const dist = lerp(MIN_DIST, MAX_DIST, p);
-  const b = blocks[cur], n = blocks[cur + 1];
-  let dx = n.x - b.x, dy = n.y - b.y;
-  const len = Math.hypot(dx, dy); dx /= len; dy /= len;
-  const pa = project(b.x, b.y, BLOCK_H);
-  const pb = project(b.x + dx * dist, b.y + dy * dist, BLOCK_H);
-  ctx.save();
-  ctx.setLineDash([5, 8]);
-  ctx.strokeStyle = 'rgba(255,255,255,.85)';
-  ctx.lineWidth = 2.5;
-  ctx.beginPath(); ctx.moveTo(pa[0], pa[1]); ctx.lineTo(pb[0], pb[1]); ctx.stroke();
-  ctx.setLineDash([]);
-  /* 落点标记 */
-  ctx.beginPath();
-  ctx.ellipse(pb[0], pb[1], 9 * S, 4.5 * S, 0, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.lineWidth = 2; ctx.stroke();
-  ctx.restore();
-}
-
 function render() {
   /* 背景渐变 */
   const bg = ctx.createLinearGradient(0, 0, 0, H);
@@ -691,9 +670,6 @@ function render() {
   }
 
   for (let i = split; i < blocks.length; i++) drawBlock(blocks[i]);
-
-  /* 蓄力辅助虚线 */
-  if (mode === ST.CHARGE) drawAimLine();
 
   /* 落地圆环扩散 */
   for (const r of rings) {
